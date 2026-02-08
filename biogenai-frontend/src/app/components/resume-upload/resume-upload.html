@@ -1,0 +1,45 @@
+
+<!-- Customization Starts -->
+<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4 text-center">Upload Resume</h2>
+
+    @if(errorMessage){
+        <div class="mb-2 p-2 bg-red-100 text-red-700 rounded">{{ errorMessage }}</div>
+    }
+
+    @if(successMessage){
+        <div class="mb-2 p-2 bg-green-100 text-green-700 rounded">{{ successMessage }}</div>
+    }
+
+    <form (ngSubmit)="onUpload()">
+        <div class="mb-4">
+            <label class="block mb-1 font-medium">Employee Name</label>
+            <input 
+                name="name" 
+                [(ngModel)]="employeeName" 
+                placeholder="Employee name" 
+                [disabled]="isLoading"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1 font-medium">Resume File</label>
+            <input 
+                type="file" 
+                (change)="onFileSelected($event)"
+                [disabled]="isLoading"
+                class="w-full"
+            />
+        </div>
+        
+        <button 
+            type="submit"
+            [disabled]="isLoading || !employeeName || !selectedFile"
+            class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+        >
+        {{ isLoading ? 'Uploading...' : 'Upload'}}
+        </button>
+    </form>
+</div>
+<!-- Customization Ends -->
