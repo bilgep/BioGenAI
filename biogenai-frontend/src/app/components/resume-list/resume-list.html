@@ -1,0 +1,32 @@
+<div class="max-w-md mx-auto mt-6 p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-4 text-center">Uploaded Resumes</h2>
+
+<!-- <p>isLoading = {{ isLoading }}, files count = {{ files.length }}</p> -->
+
+@if (isLoading) {
+    <p class="text-center text-gray-500">Loading...</p>
+}
+
+  @if (errorMessage) {
+    <div class="mb-2 p-2 bg-red-100 text-red-700 rounded">{{ errorMessage }}</div>
+  }
+
+  @if (!isLoading && files.length === 0) {
+    <p class="text-center text-gray-400">No resumes uploaded yet.</p>
+  }
+
+  @if (!isLoading && files.length > 0) {
+    <ul class="divide-y divide-gray-200">
+      @for (file of files; track file) {
+        <li class="py-2 px-1 text-gray-700">{{ file }}</li>
+      }
+    </ul>
+  }
+
+  <button
+    (click)="loadResumes()"
+    class="mt-4 w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700 transition"
+  >
+    Refresh
+  </button>
+</div>

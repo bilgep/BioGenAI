@@ -1,17 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-<<<<<<< HEAD
 import { ResumeUpload } from './components/resume-upload/resume-upload';
+import { ResumeList } from './components/resume-list/resume-list';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ResumeUpload],
-=======
-
-@Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
->>>>>>> 54997c7 (initial commit)
+  imports: [RouterOutlet, ResumeUpload, ResumeList],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

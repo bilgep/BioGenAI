@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ResumeService } from '../../services/resume';
@@ -10,7 +10,7 @@ import { ResumeService } from '../../services/resume';
   styleUrl: './resume-upload.css',
 })
 
-export class ResumeUpload {
+export class ResumeUpload implements OnInit{
 
   employeeName: string = '';
   selectedFile: File | null = null;
@@ -20,6 +20,20 @@ export class ResumeUpload {
   uploadProgress = 0; // 0-100
 
   constructor(private resumeService: ResumeService) {}
+
+  ngOnInit(): void {
+    this.resumeService.getResumes().subscribe({
+      complete: () => { 
+        console.log("Completed");
+      },
+      next: (data) =>{
+        console.log('Resumes from API:', data);
+      },
+      error: (err) => {
+        console.error('Error fetching resumes:', err);
+      }
+    });
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;

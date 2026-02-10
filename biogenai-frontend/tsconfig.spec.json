@@ -3,10 +3,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-<<<<<<< HEAD
-=======
     "outDir": "./out-tsc/spec",
->>>>>>> 54997c7 (initial commit)
     "types": [
       "vitest/globals"
     ]

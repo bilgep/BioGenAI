@@ -1,55 +1,86 @@
-# Step 2.5: List Uploaded Resumes
+# Step 2.6: Refactor Backend into Modular Structure
 
 **Purpose:**
-Enable users to view a list of uploaded resumes by implementing a backend API and connecting it to the Angular frontend.
+Organize your Express backend into a clean, maintainable folder structure before adding more features. Keeping everything in index.ts becomes hard to read, test, and maintain as the project grows.
+
+**What You'll Learn:**
+- Express Router — a built-in way to split routes into separate files.
+- Separation of concerns — routes define endpoints, controllers handle logic, middleware handles cross-cutting concerns.
+- Industry-standard Node.js project structure.
+
+**Best Practices:**
+- Keep index.ts minimal — only server startup, middleware registration, and route imports.
+- Group routes by resource (e.g., all resume routes in one file).
+- Extract reusable middleware (e.g., Multer config) into its own file.
+- Use `export default router` to export route modules.
+
+**Alternatives:**
+- NestJS: An opinionated framework that enforces this structure automatically (heavier, more to learn).
+- Feature-based grouping: Put route + controller + tests in one folder per feature.
 
 ---
 
-## 1. Add Backend API Endpoint to List Resumes
+## 2.6.1: Create Folder Structure
 
-**How:**
-- In your Express backend, add a GET /api/resumes endpoint that reads the uploads directory and returns a list of filenames.
+Create these directories inside `biogenai-backend/src/`:
+```
+src/
+  routes/       ← Route definitions (URL + HTTP method)
+  controllers/  ← Business logic
+  middleware/   ← Multer, auth, logging, etc.
+  config/       ← Constants, environment variables
+```
 
-**Verification:**
-1. Use Postman, curl, or your browser to call http://localhost:3000/api/resumes.
-2. Confirm you receive a JSON list of uploaded files.
-3. If you see the expected data, your backend endpoint works!
+## 2.6.2: Extract Multer Configuration to Middleware
+
+Move your Multer setup from index.ts to `src/middleware/upload.ts`.
+
+## 2.6.3: Extract Resume Routes to a Route File
+
+Move all /api/resumes routes to `src/routes/resume.ts` using Express Router.
+
+**Example:**
+```typescript
+// src/routes/resume.ts
+import { Router } from 'express';
+import { upload } from '../middleware/upload';
+
+const router = Router();
+
+router.post('/', upload.single('resume'), (req, res) => { /* ... */ });
+router.get('/', (req, res) => { /* ... */ });
+
+export default router;
+```
+
+```typescript
+// src/index.ts
+import resumeRoutes from './routes/resume';
+app.use('/api/resumes', resumeRoutes);
+```
+
+## 2.6.4: Test and Verify Refactored Routes
+
+**How to test:**
+- Start the backend and hit all existing endpoints (health, upload, list).
+- Confirm they still work after refactoring.
+
+## 2.6.5: Extract Health Route
+
+Move /api/health to `src/routes/health.ts`.
+
+## 2.6.6: Clean Up index.ts
+
+index.ts should only contain server startup, middleware registration, and route imports.
+
+## 2.6.7: Final Verification
+
+**How to test:**
+- Test all endpoints again.
+- Review index.ts to confirm it is clean and minimal.
 
 ---
 
-## 2. Add Angular Service Method to Fetch Resume List
-
-**How:**
-- In your ResumeService, add a method to GET /api/resumes and return the list.
-
-**Verification:**
-1. Temporarily call this method from a component and log the result to the console.
-2. Confirm the data matches what the backend returns.
-
----
-
-## 3. Build Resume List Component
-
-**How:**
-- Create a new Angular component to display the list of resumes.
-- Use the service method to fetch and show the data.
-
-**Verification:**
-1. Open the UI and confirm the list displays correctly.
-2. Upload a new file and check that the list updates.
-
----
-
-## 4. Add Download/View Actions (if required)
-
-**How:**
-- Add buttons or links to download or view each resume.
-- Implement the backend endpoint if needed.
-
-**Verification:**
-1. Click the download/view button and confirm the file is received or displayed.
-
----
 # Step 2.4: Implement Resume Upload from Angular Frontend
 
 **Purpose:**
@@ -60,7 +91,33 @@ Enable users to upload their resumes from the Angular UI and send the file to yo
 - Angular’s HttpClient and FormData are used to send files as multipart/form-data, which your backend (with Multer) can process.
 
 ---
+## PREREQUISITE: Register HttpClient in app.config.ts
 
+**Why?**
+Angular's `HttpClient` will not work unless `provideHttpClient()` is registered in your app config. Without it, HTTP calls silently fail — no errors, no data, just nothing happens.
+
+**How:**
+Open `src/app/app.config.ts` and add `provideHttpClient()` to the providers array:
+
+```typescript
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideHttpClient()
+  ]
+};
+```
+
+**Important:** Do this BEFORE writing any service that uses `HttpClient`.
+
+---
 ## 1. Generate the Resume Upload Service
 
 **Why?**
@@ -240,6 +297,24 @@ Enable users to view a list of uploaded resumes by implementing a backend API an
 **How:**
 - Create a new Angular component to display the list of resumes.
 - Use the service method to fetch and show the data.
+
+**Important: Change Detection Issue**
+When loading data in `ngOnInit()` via `.subscribe()`, Angular may not automatically detect that your variables changed inside the HTTP callback. If the UI stays on "Loading..." even though data arrived:
+- Use `ChangeDetectorRef.detectChanges()` after setting your variables:
+```typescript
+import { ChangeDetectorRef } from '@angular/core';
+
+constructor(private resumeService: ResumeService, private cdr: ChangeDetectorRef) {}
+
+this.resumeService.getResumes().subscribe({
+  next: (data) => {
+    this.files = data.files;
+    this.isLoading = false;
+    this.cdr.detectChanges(); // Force Angular to re-render
+  }
+});
+```
+- **Alternative (cleaner, more advanced):** Use the `async` pipe in the template to bind Observables directly without `.subscribe()`.
 
 ## 2.5.6: Test and Verify Resume List UI
 

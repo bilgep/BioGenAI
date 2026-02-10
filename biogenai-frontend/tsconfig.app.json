@@ -3,10 +3,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-<<<<<<< HEAD
-=======
     "outDir": "./out-tsc/app",
->>>>>>> 54997c7 (initial commit)
+    "rootDir": "./src",
     "types": []
   },
   "include": [

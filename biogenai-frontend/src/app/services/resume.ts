@@ -18,4 +18,14 @@ export class ResumeService {
 
     return this.http.post(this.apiUrl, formData);
   }
+
+  // TODO Use an interface for the response type
+  /*
+  interface ResumeListResponse {
+    files: string[];
+  }
+  */
+  getResumes() : Observable<{files: string[]}>{
+    return this.http.get<{files : string[]}>(this.apiUrl);
+  }
 }
