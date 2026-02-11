@@ -508,7 +508,7 @@ Purpose: Let users see what has been uploaded.
 Instructions: Build list endpoint, fetch via service, render in UI.
 Best practices: Handle loading, empty, and error states.
 - Build the backend list endpoint, add Angular service methods, and render the list UI.
-- Includes steps 2.5.1 through 2.5.8 in the detailed guide.
+- Includes steps 2.5.1 through 2.5.9 in the detailed guide.
 
 **2.6: Refactor Backend into Modular Structure (20 min)**
 Purpose: Keep backend maintainable before adding more features.
@@ -566,7 +566,8 @@ export const appConfig: ApplicationConfig = {
 - PENDING: HTTP error interceptor (Step 2.8 optional)
 - ✅ Resume upload integrated with backend (Step 2.3 detailed guide)
 - ✅ Resume list component working (Step 2.5 detailed guide)
-- NEXT: Download/view actions (Step 2.5.7 detailed guide)
+- ✅ Download/view actions (Step 2.5.7 detailed guide)
+- NEXT: Fix Multer storage for readable filenames (Step 2.5.9)
 - PENDING: Backend refactor (Step 2.6 detailed guide)
 
 > **See Detailed Step Guides at end of this document and ANGULAR_BEGINNERS_GUIDE.md for implementation details.**
@@ -2902,10 +2903,51 @@ Enable users to view a list of uploaded resumes by implementing a backend API an
 
 ## 2.5.7: Add Download/View Actions (if required)
 
+Four code changes across backend and frontend:
+- (a) Backend: Add `GET /api/resumes/:filename` endpoint with path traversal protection
+- (b) Service: Add `getDownloadUrl()` helper method
+- (c) Component: Change `resumeService` from `private` to `public`
+- (d) Template: Add download `<a>` link with `[href]` property binding
+
 ## 2.5.8: Test and Verify Download/View Actions
 
 **How to test:**
 - Test that files are received or displayed correctly when clicking download/view.
+- Test edge cases: nonexistent file (404), path traversal attempt (400).
+
+## 2.5.9: Fix Multer Storage to Preserve Original Filenames
+
+**Purpose:**
+By default, Multer's `dest` option saves files with random hashes and no extension (e.g., `16b1e877845f5a8cdff83ceea8785fd3`). This makes downloaded files unusable. Switch to `multer.diskStorage()` to preserve the original filename with a timestamp prefix to prevent collisions.
+
+**What you'll learn:**
+- `multer.diskStorage()` — full control over file destination and naming
+- `file.originalname` — accessing the uploaded file's original name
+- Node.js callback pattern `(req, file, cb)` — older async pattern still used by Multer
+- Filename collision prevention with timestamp prefixes
+
+**Instructions:**
+Replace `const upload = multer({ dest: 'uploads/' });` with:
+```typescript
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniquePrefix = Date.now() + '-';
+    cb(null, uniquePrefix + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
+```
+
+**How to test:**
+- Restart the backend.
+- Upload a new resume file.
+- Check the `uploads/` folder — file should be named like `1739285400000-resume.pdf`.
+- The resume list should show the readable filename.
+- Click Download — file should download with the correct name and extension.
 
 ---
 

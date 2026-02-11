@@ -14,7 +14,7 @@ export class ResumeList implements OnInit {
   errorMessage: string = '';
 
   constructor(
-    private resumeService: ResumeService,
+    public resumeService: ResumeService,
     private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {

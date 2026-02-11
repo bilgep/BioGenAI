@@ -28,4 +28,8 @@ export class ResumeService {
   getResumes() : Observable<{files: string[]}>{
     return this.http.get<{files : string[]}>(this.apiUrl);
   }
+
+  getDownloadUrl(filename: string): string {
+    return `${this.apiUrl}/${filename}`
+  }
 }

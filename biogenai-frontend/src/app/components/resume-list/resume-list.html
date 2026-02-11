@@ -17,9 +17,24 @@
 
   @if (!isLoading && files.length > 0) {
     <ul class="divide-y divide-gray-200">
-      @for (file of files; track file) {
+
+
+      <!-- @for (file of files; track file) {
         <li class="py-2 px-1 text-gray-700">{{ file }}</li>
+      } -->
+
+      @for (file of files; track file) {
+        <li class="py-2 px-1 flex justify-between items-center text-gray-700">
+          <span>{{ file }}</span>
+
+          <a [href]="resumeService.getDownloadUrl(file)"
+          target="_blank"
+          class="text-blue-600 hover:text-blue-800 text-sm underline" >
+          Download
+        </a>
+        </li>
       }
+
     </ul>
   }
 
