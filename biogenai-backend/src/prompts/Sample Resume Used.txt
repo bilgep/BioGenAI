@@ -1,0 +1,20 @@
+Name: Alex Mercer
+Email: alex.mercer@example.com
+Phone: +1 555-123-4567
+
+Objective:
+Creative software developer with 2 years of experience building full-stack web applications. Looking to leverage Node.js and React skills in a collaborative environment.
+
+Skills:
+- JavaScript, TypeScript, Node.js, React
+- REST APIs, SQL, MongoDB
+- Git, Docker, Agile workflows
+
+Experience:
+Junior Developer | NovaTech Solutions | 2022-2024
+- Built responsive web applications using React and Node.js
+- Developed APIs and managed database schemas
+- Participated in code reviews and Agile sprints
+
+Education:
+B.Sc. in Computer Science | Eastwood University | 2018-2022
