@@ -716,11 +716,22 @@ Best practices: Compare API response data with DB records.
 - Verify GET endpoints return the same data you see in the DB
 
 **Checklist after Phase 3:**
-- ✅ All endpoints created
-- ✅ Error handling in place
-- ✅ Tested with Postman
-- ✅ DB verification completed (rows + relations)
-- ✅ Ready for frontend integration
+
+**3.7: Refactor Backend to Service/Repository Pattern (30 min)**
+Purpose: Move business logic and database calls out of route files into dedicated service and repository files for maintainability and testability.
+Instructions: Refactor at least one feature (e.g., resume upload) to use a service layer (for business logic) and a repository layer (for direct database access). Update your route files to call the service instead of Prisma directly. Explain the benefits of this pattern for professional development.
+Best practices:
+- Keep route files focused on HTTP request/response and validation.
+- Move business logic (e.g., file validation, orchestration) to service files.
+- Move all direct database access (Prisma calls) to repository files.
+- Make each layer testable in isolation.
+Checklist for Step 3.7:
+- ✅ Created a `services/` and `repositories/` folder in backend `src/`
+- ✅ Moved business logic out of at least one route file
+- ✅ All database calls are in repository files
+- ✅ Route files only call service methods
+- ✅ All endpoints still work after refactor
+- ✅ Understand the benefits of this structure for scaling and testing
 
 ---
 

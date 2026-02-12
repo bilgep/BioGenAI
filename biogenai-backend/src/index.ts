@@ -12,7 +12,7 @@ import employeeRouter from './routes/employee'
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use('/api/resumes', resumeRouter);
+app.use('/api/resume', resumeRouter);
 app.use('/api/employees', employeeRouter);
 app.use('/api/health', healthRouter);
 app.use(consoleLogger);
