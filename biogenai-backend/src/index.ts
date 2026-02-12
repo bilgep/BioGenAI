@@ -7,6 +7,7 @@ import resumeRouter from './routes/resume';
 import healthRouter from './routes/health';
 import { consoleLogger } from './middleware/logger';
 import employeeRouter from './routes/employee'
+import bioRouter from './routes/bio';
 
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/resume', resumeRouter);
 app.use('/api/employees', employeeRouter);
 app.use('/api/health', healthRouter);
+app.use('/api/bio', bioRouter);
 app.use(consoleLogger);
 
 const PORT = process.env.PORT || 3000;

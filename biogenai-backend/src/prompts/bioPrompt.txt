@@ -1,0 +1,4 @@
+Write a professional, third-person bio for the following employee. Do NOT mention company names. Focus on skills, experience, and achievements.
+
+Resume:
+{resumeText}
